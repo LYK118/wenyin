@@ -2,25 +2,137 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#315c4b">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="文引">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>文引｜文献管理</title>
 <style>
-:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#22312b;background:#f4f6f2}*{box-sizing:border-box}body{margin:0}header{background:#315c4b;color:#fff;padding:22px max(20px,calc((100% - 920px)/2))}h1{margin:0;font-size:1.5rem}header p{margin:6px 0 0;color:#d9e5dc}.wrap{max-width:920px;margin:24px auto;padding:0 16px}.card{background:#fff;border:1px solid #e2e8e1;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 4px 16px #193b2910}h2{font-size:1.1rem;margin:0 0 14px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:.85rem;color:#506159;display:block;margin-bottom:5px}input,select,textarea,button{font:inherit}input,select,textarea{width:100%;padding:11px;border:1px solid #d5ddd5;border-radius:9px;background:white;color:#22312b}textarea{min-height:80px;resize:vertical}.wide{grid-column:1/-1}.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:9px;padding:10px 15px;background:#315c4b;color:white;cursor:pointer}button.secondary{background:#eaf0eb;color:#315c4b}.note{color:#67766e;font-size:.84rem;line-height:1.55}.citation{white-space:pre-wrap;background:#f5f7f4;border-radius:9px;padding:14px;min-height:48px}.item{border-top:1px solid #e5ebe5;padding:14px 0}.item strong{display:block}.tag{color:#67766e;font-size:.82rem}@media(max-width:600px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.wrap{margin-top:14px}}
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#22312b;background:#f4f6f2}
+*{box-sizing:border-box}
+body{margin:0}
+header{background:#315c4b;color:#fff;padding:22px max(20px,calc((100% - 920px)/2))}
+main{max-width:920px;margin:24px auto;padding:0 16px}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 4px 16px #19392b10}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+input,select,textarea,button{font:inherit}
+input[type=text],textarea,select{padding:10px;border:1px solid #ccd6cf;border-radius:8px;max-width:100%}
+button{border:0;border-radius:8px;padding:10px 16px;background:#315c4b;color:white;cursor:pointer}
+button.secondary{background:#e9f0eb;color:#23483b}
+button:disabled{opacity:.55;cursor:wait}
+.muted{color:#68766e;font-size:.92rem}
+.result{white-space:pre-wrap;background:#f5f8f5;padding:12px;border-radius:8px;overflow-wrap:anywhere}
+.field{display:grid;grid-template-columns:130px 1fr;gap:10px;margin:10px 0}
+.field input{width:100%}
+@media(max-width:600px){.field{grid-template-columns:1fr;gap:4px}}
 </style>
 </head>
-<body><header><h1>文引</h1><p>文献整理、引文生成与个人文献库</p></header><main class="wrap">
-<section class="card"><h2>拍照识别 / 上传文献图片</h2><p class="note">拍摄或选择文献首页、封面图片。当前版本提供图片预览；自动 OCR 识别尚未接入。</p><div class="row"><label for="camera" style="padding:10px 15px;background:#eaf0eb;color:#315c4b;border-radius:9px;cursor:pointer">拍照</label><input id="camera" type="file" accept="image/*" capture="environment" style="display:none"><label for="imageUpload" style="padding:10px 15px;background:#eaf0eb;color:#315c4b;border-radius:9px;cursor:pointer">上传图片</label><input id="imageUpload" type="file" accept="image/*" style="display:none"></div><div id="imagePreview" style="margin-top:12px"></div></section>
-<section class="card"><h2>添加文献</h2><div class="grid">
-<div><label for="type">文献类型</label><select id="type"><option>期刊文章</option><option>图书</option><option>图书章节</option><option>会议论文</option><option>学位论文</option><option>研究报告</option><option>预印本</option><option>标准</option><option>专利</option><option>网页</option><option>数据集</option><option>软件</option><option>法律法规</option><option>判例</option><option>报纸文章</option><option>百科全书条目</option><option>档案/手稿</option><option>地图</option><option>音视频</option></select></div>
-<div><label for="style">引文格式</label><select id="style"><option>GB/T 7714—2025</option><option>APA 7</option><option>MLA 9</option><option>Chicago 18</option><option>Harvard</option><option>IEEE</option><option>Vancouver</option><option>AMA</option><option>ACS</option><option>Nature</option><option>Elsevier</option><option>Bluebook 21</option><option>《法学引注手册》第二版（2025）</option></select></div>
-<div><label for="authors">作者</label><input id="authors" placeholder="作者之间用逗号分隔"></div><div><label for="year">年份</label><input id="year" placeholder="例如：2025"></div><div class="wide"><label for="title">标题</label><input id="title" placeholder="文献标题"></div><div><label for="source">期刊/出版社/来源</label><input id="source"></div><div><label for="volume">卷(期)/版本</label><input id="volume"></div><div><label for="pages">页码</label><input id="pages"></div><div><label for="doi">DOI / URL / 编号</label><input id="doi"></div><div class="wide"><label for="notes">备注</label><textarea id="notes"></textarea></div></div>
-<div class="row"><button id="generate">生成引文</button><button class="secondary" id="save">加入文献库</button><button class="secondary" id="export">导出 BibTeX</button></div><p class="note">格式模板提供常见引文结构；法律文献及特定期刊的细则可能不同，请依目标机构正式规范核对。</p></section>
-<section class="card"><h2>生成结果</h2><div class="citation" id="result">填写信息后点击“生成引文”。</div><div class="row"><button class="secondary" id="copy">复制引文</button></div></section><section class="card"><h2>文献库</h2><div id="list" class="note">文献库暂时为空。</div></section></main>
+<body>
+<header>
+  <h1>文引｜文献管理</h1>
+  <div>识别并整理文献资料</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>上传文献</h2>
+    <p>选择图片、PDF 或 DJVU 文件。识别结果可能有误，请对照原文核对。</p>
+    <div class="row">
+      <input id="file" type="file" accept="image/*,.pdf,.djvu,.djv">
+      <button id="takePhoto" class="secondary" type="button">拍照识别</button>
+    </div>
+    <input id="camera" type="file" accept="image/*" capture="environment" hidden>
+    <p class="muted">选择文件或拍照后自动载入。自动 AI 识别需要网站服务端接入获授权的 AI 服务。</p>
+    <p id="status" class="muted"></p>
+    <div id="preview"></div>
+  </section>
+
+  <section class="card">
+    <h2>提取的信息（可编辑）</h2>
+    <div class="field"><label for="authors">作者</label><input id="authors" type="text"></div>
+    <div class="field"><label for="title">题名</label><input id="title" type="text"></div>
+    <div class="field">
+      <label for="type">文献类型</label>
+      <select id="type">
+        <option>期刊文章</option><option>图书</option><option>图书章节</option>
+        <option>会议论文</option><option>学位论文</option><option>研究报告</option>
+        <option>网页</option><option>报纸文章</option><option>其他</option>
+      </select>
+    </div>
+    <div class="field"><label for="source">期刊/出版社/来源</label><input id="source" type="text"></div>
+    <div class="field"><label for="year">年份</label><input id="year" type="text"></div>
+    <div class="field"><label for="volume">卷(期)</label><input id="volume" type="text"></div>
+    <div class="field"><label for="pages">页码</label><input id="pages" type="text"></div>
+    <div class="field"><label for="doi">DOI</label><input id="doi" type="text"></div>
+    <button id="citation" type="button">生成 GB/T 7714 引文</button>
+    <div id="output" class="result" style="margin-top:12px"></div>
+  </section>
+</main>
+
 <script>
-const $=id=>document.getElementById(id);const fields=['type','style','authors','year','title','source','volume','pages','doi','notes'];function read(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}function render(x){let author=x.authors.split(/[,，、]/).map(s=>s.trim()).filter(Boolean).join(', '),t=x.title||'Untitled',y=x.year||'n.d.',s=x.source||'',v=x.volume?`, ${x.volume}`:'',p=x.pages?`, pp. ${x.pages}`:'',id=x.doi?(x.doi.startsWith('http')?x.doi:'https://doi.org/'+x.doi):'',st=x.style;if(st.startsWith('GB/T'))return `${author}. ${t}[${({'期刊文章':'J','图书':'M','图书章节':'M','会议论文':'C','学位论文':'D','研究报告':'R','预印本':'EB/OL','标准':'S','专利':'P','网页':'EB/OL','数据集':'DS','软件':'CP','法律法规':'A','判例':'A','报纸文章':'N','百科全书条目':'M','档案/手稿':'A','地图':'CM','音视频':'AV'})[x.type]||'Z'}. ${s}${v}${p}. ${y}${id?'. '+id:''}`;if(st.startsWith('APA'))return `${author} (${y}). ${t}. ${s}${v}${p}${id?'. '+id:''}`;if(st.startsWith('MLA'))return `${author}. “${t}.” ${s}${v}, ${y}${p}${id?'. '+id:''}.`;if(st.startsWith('Chicago'))return `${author}. “${t}.” ${s}${v} (${y})${p}${id?'. '+id:''}.`;if(st==='IEEE')return `${author}, “${t},” ${s}${v}, ${y}${p}${id?'. '+id:''}.`;if(st==='Vancouver'||st==='AMA')return `${author}. ${t}. ${s}. ${y}${v}${p}${id?'. '+id:''}.`;if(st==='Bluebook 21')return `${author}, ${t}, ${s}${v} (${y})${p}${id?'. '+id:''}.`;if(st.startsWith('《法学'))return `${author}：《${t}》，${s}${v}（${y}）${p}${id?'，'+id:''}。`;return `${author}. ${t}. ${s}. ${y}${v}${p}${id?'. '+id:''}.`;}
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function items(){try{return JSON.parse(localStorage.getItem('wenyin')||'[]')}catch{return []}}function paint(){let arr=items();$('list').innerHTML=arr.length?arr.map((x,i)=>`<div class="item"><strong>${esc(x.title||'未命名')}</strong><span class="tag">${esc(x.type)} · ${esc(x.style)} · ${esc(x.year)}</span><div>${esc(render(x))}</div><button class="secondary" onclick="removeItem(${i})">删除</button></div>`).join(''):'尚无加入文献库。'}window.removeItem=i=>{let a=items();a.splice(i,1);localStorage.setItem('wenyin',JSON.stringify(a));paint()};$('generate').onclick=()=>{$('result').textContent=render(read())};$('save').onclick=()=>{let x=read();if(!x.title){alert('请先填写标题');return}let a=items();a.unshift(x);localStorage.setItem('wenyin',JSON.stringify(a));paint()};$('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('result').textContent)}catch{let e=document.createElement('textarea');e.value=$('result').textContent;document.body.append(e);e.select();document.execCommand('copy');e.remove()}};$('export').onclick=()=>{let x=read(),key=(x.authors.split(/[,，、]/)[0]||'ref').replace(/\W/g,'')+x.year,bib=`@misc{${key},\n  author = {${x.authors}},\n  title = {${x.title}},\n  year = {${x.year}},\n  howpublished = {${x.source}},\n  doi = {${x.doi}}\n}`;let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bib],{type:'application/x-bibtex'}));a.download='reference.bib';a.click();URL.revokeObjectURL(a.href)};function showImage(file){if(!file)return;if(!file.type.startsWith('image/')){alert('请选择图片文件');return}let url=URL.createObjectURL(file);$('imagePreview').innerHTML=`<img src="${url}" alt="文献图片预览" style="max-width:100%;max-height:360px;border-radius:10px"><p class="note">已载入图片：${esc(file.name)}。此版本尚未集成 OCR 自动识别。</p>`}['camera','imageUpload'].forEach(id=>$(id).addEventListener('change',e=>showImage(e.target.files[0])));paint();
-</script></body></html>
+const $ = id => document.getElementById(id);
+
+function handleFile(file) {
+  $("preview").replaceChildren();
+  $("status").textContent = "";
+  if (!file) return;
+
+  const url = URL.createObjectURL(file);
+
+  if (file.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "上传图片预览";
+    img.style = "max-width:100%;max-height:420px";
+    $("preview").append(img);
+  } else if (file.type === "application/pdf") {
+    const frame = document.createElement("iframe");
+    frame.src = url;
+    frame.title = "PDF 预览";
+    frame.style = "width:100%;height:420px;border:0";
+    $("preview").append(frame);
+  } else {
+    $("preview").textContent =
+      "已选择 " + file.name + "。DJVU 文件需先转换为 PDF 或图片后才能预览和识别。";
+  }
+
+  $("status").textContent =
+    "文件已载入。当前网页没有连接后台 AI，因此尚未自动提取信息。";
+}
+
+$("file").addEventListener("change", () => handleFile($("file").files[0]));
+$("takePhoto").addEventListener("click", () => $("camera").click());
+$("camera").addEventListener("change", () => handleFile($("camera").files[0]));
+
+$("citation").addEventListener("click", () => {
+  const authors = $("authors").value.trim()
+    .replace(/[;,，、]+/g, "; ")
+    .replace(/;\s*/g, ", ");
+  const title = $("title").value.trim();
+  const type = $("type").value;
+  const source = $("source").value.trim();
+  const year = $("year").value.trim();
+  const volume = $("volume").value.trim();
+  const pages = $("pages").value.trim();
+  const doi = $("doi").value.trim();
+
+  const codes = {
+    "期刊文章":"J", "图书":"M", "图书章节":"M", "会议论文":"C",
+    "学位论文":"D", "研究报告":"R", "网页":"EB/OL",
+    "报纸文章":"N", "其他":"Z"
+  };
+  const code = codes[type] || "Z";
+  const isJournal = type === "期刊文章";
+  const cleanDoi = doi
+    ? (doi.startsWith("http") ? doi : "https://doi.org/" + doi).replace(/[.。]+$/, "")
+    : "";
+
+  let citation = `${authors || "作者未填写"}. ${title || "题名未填写"}[${code}]. ${source}`;
+  if (isJournal && year) citation += `, ${year}`;
+  if (volume) citation += `, ${volume}`;
+  if (pages) citation += `: ${pages}`;
+  if (!isJournal && year) citation += `. ${year}`;
+  citation += cleanDoi ? `. ${cleanDoi}.` : ".";
+
+  $("output").textContent = citation;
+});
+</script>
+</body>
+</html>
